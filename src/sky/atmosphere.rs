@@ -16,7 +16,9 @@ const OZONE_WIDTH: f64 = 15_000.0;
 /// Molecules per m² in one Dobson unit.
 const DOBSON_UNIT: f64 = 2.687e20;
 const DRY_ANGSTROM: f64 = 1.3;
-const DRY_SINGLE_SCATTERING_ALBEDO: f64 = 0.9;
+/// Fraction of the light dry aerosol intercepts that it scatters rather
+/// than absorbs: clean rural or marine air. Polluted air is nearer 0.9.
+const DRY_SINGLE_SCATTERING_ALBEDO: f64 = 0.97;
 const HANEL_EXPONENT: f64 = 0.4;
 const DRY_ASYMMETRY: f64 = 0.7;
 const WET_ASYMMETRY: f64 = 0.8;
