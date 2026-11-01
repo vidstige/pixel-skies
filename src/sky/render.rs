@@ -17,6 +17,9 @@ const DAYLIGHT: f64 = 5000.0;
 /// How far exposure follows the sky as it dims, from 0 (fixed exposure)
 /// to 1 (twilight as bright as noon).
 const ADAPTATION: f64 = 0.8;
+/// Mean sky radiance in cd/m² below which exposure stops adapting, so
+/// night after dusk falls dark.
+const DIMMEST: f64 = 0.01;
 /// Samples per pixel along each axis.
 const SUPERSAMPLING: usize = 3;
 const DOME_ELEVATIONS: usize = 32;
@@ -79,7 +82,7 @@ fn pixel(scene: &Scene, x: usize, y: usize, width: usize, height: usize) -> [u8;
 }
 
 /// Exposure meters the mean sky radiance, partially adapting to dimmer
-/// skies; `ev` shifts from there in stops.
+/// skies down to dusk; `ev` shifts from there in stops.
 pub fn render(
     sky: &Sky,
     sun: Vec3,
@@ -91,7 +94,7 @@ pub fn render(
     let dome = dome_irradiance(sky, sun);
     let lit = add(dome, sky.sun.irradiance(sun[2].asin()));
     let ground = scale(lit, sky.params.albedo / PI);
-    let mean = dome[1] / PI;
+    let mean = (dome[1] / PI).max(DIMMEST);
     let exposure = KEY * 2f64.powf(ev) / DAYLIGHT * (DAYLIGHT / mean).powf(ADAPTATION);
     let scene = Scene { sky, sun, camera, ground, exposure };
     let row = |y: usize| -> Vec<[u8; 4]> {

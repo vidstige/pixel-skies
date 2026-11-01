@@ -148,8 +148,9 @@ turns clean blue skies milky and sunsets dull orange.
 
 Rendering looks the table up per pixel, adds the limb-darkened solar disk
 and a ground lit by sun and sky, and exposes for the mean sky radiance,
-partially adapting so twilight still reads as dusk. An ACES-style filmic
-curve and dithered sRGB encoding finish the image.
+partially adapting so twilight still reads as dusk. Adaptation stops in
+deep twilight, at half a millionth of daylight, so night falls dark. An
+ACES-style filmic curve and dithered sRGB encoding finish the image.
 
 ## References
 
