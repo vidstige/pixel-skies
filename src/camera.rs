@@ -3,7 +3,7 @@
 
 use std::f64::consts::FRAC_PI_2;
 
-use crate::vec3::{add, cross, normalize, scale, Vec3};
+use crate::vec3::{add, cross, dot, length, normalize, scale, Vec3};
 
 pub enum Camera {
     /// Pinhole looking towards `yaw` azimuth and `pitch` elevation, with
@@ -47,6 +47,28 @@ impl Camera {
             }
         }
     }
+
+    /// Image point of `v`, seen from the eye, and how many pixels a
+    /// meter spans there; nothing behind a pinhole or below a fisheye.
+    pub fn project(&self, v: Vec3, width: f64, height: f64) -> Option<[f64; 3]> {
+        match *self {
+            Camera::Perspective { yaw, pitch, fov } => {
+                let (forward, right, up) = basis(yaw, pitch);
+                let (z, s) = (dot(v, forward), (fov / 2.0).tan());
+                let x = (1.0 + dot(v, right) / z / s) * width / 2.0;
+                let y = (1.0 - dot(v, up) / z / s * width / height) * height / 2.0;
+                (z > 0.0).then_some([x, y, width / 2.0 / s / z])
+            }
+            Camera::Fisheye => {
+                let radius = width.min(height) / 2.0;
+                let d = length(v);
+                let r = radius * (v[2] / d).acos() / FRAC_PI_2;
+                let azimuth = v[0].atan2(v[1]);
+                let (x, y) = (width / 2.0 - r * azimuth.sin(), height / 2.0 - r * azimuth.cos());
+                (v[2] >= 0.0).then_some([x, y, radius / FRAC_PI_2 / d])
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -71,6 +93,21 @@ mod tests {
         let left = camera.ray(0.0, 50.0, 200.0, 100.0).unwrap();
         let right = camera.ray(200.0, 50.0, 200.0, 100.0).unwrap();
         assert!((dot(left, right).acos() - 1.2).abs() < 1e-9);
+    }
+
+    fn round_trips(camera: Camera) {
+        let (w, h) = (640.0, 480.0);
+        for (x, y) in [(250.0, 150.0), (320.0, 240.0), (420.0, 330.0)] {
+            let ray = camera.ray(x, y, w, h).unwrap();
+            let p = camera.project(scale(ray, 30.0), w, h).unwrap();
+            assert!((p[0] - x).abs() < 1e-6 && (p[1] - y).abs() < 1e-6);
+        }
+    }
+
+    #[test]
+    fn projection_inverts_rays() {
+        round_trips(Camera::Perspective { yaw: 1.0, pitch: 0.3, fov: 1.2 });
+        round_trips(Camera::Fisheye);
     }
 
     #[test]

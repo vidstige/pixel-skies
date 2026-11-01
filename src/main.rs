@@ -4,6 +4,7 @@ mod deflate;
 mod parallel;
 mod png;
 mod sky;
+mod trees;
 mod vec3;
 
 use std::path::Path;
@@ -14,9 +15,12 @@ use args::Args;
 use camera::{direction, Camera};
 use sky::atmosphere::Params;
 use sky::{render, sky_io, Sky};
+use trees::forest::{self, Forest};
+use trees::silhouette;
 
 const SKY: &str = "out/sky.bin";
 const IMAGE: &str = "out/sky.png";
+const TREES: &str = "out/trees.png";
 const USAGE: &str = "\
 usage:
   pixel-skies bake [--aerosol 0.05] [--humidity 0.5] [--ozone 300]
@@ -24,7 +28,10 @@ usage:
   pixel-skies render [--sky out/sky.bin] [--elevation 10] [--azimuth 180]
                      [--camera perspective|fisheye] [--yaw <azimuth>]
                      [--pitch 12] [--fov 80] [--width 1280] [--height 720]
-                     [--exposure 0] [--out out/sky.png]";
+                     [--exposure 0] [--out out/sky.png]
+  pixel-skies trees [--seed 1] [--distance 150] [--density 0.06]
+                    [--yaw 180] [--pitch 12] [--fov 80]
+                    [--width 1280] [--height 720] [--out out/trees.png]";
 
 fn write(path: &str, bytes: &[u8]) {
     let parent = Path::new(path).parent().unwrap();
@@ -66,6 +73,26 @@ fn render(args: &Args) {
     eprintln!("rendered {path} in {:.1?}", start.elapsed());
 }
 
+fn trees(args: &Args) {
+    let yaw = args.get("yaw", 180.0f64).to_radians();
+    let pitch = args.get("pitch", 12.0f64).to_radians();
+    let fov = args.get("fov", 80.0f64).to_radians();
+    let camera = Camera::Perspective { yaw, pitch, fov };
+    let forest = Forest {
+        edge: args.get("distance", 150.0),
+        density: args.get("density", 0.06),
+        seed: args.get("seed", 1),
+    };
+    let (width, height) = (args.get("width", 1280), args.get("height", 720));
+    let start = Instant::now();
+    let planted = forest::plant(&forest, yaw, fov);
+    let inside = |p| forest::floor(&forest, yaw, p);
+    let pixels = silhouette::render(&planted, inside, &camera, width, height);
+    let path = args.get("out", TREES.to_string());
+    write(&path, &png::encode(&pixels, width as u32, height as u32));
+    eprintln!("planted {} trees in {path} in {:.1?}", planted.len(), start.elapsed());
+}
+
 fn main() {
     let mut words = env::args().skip(1);
     let command = words.next();
@@ -73,6 +100,7 @@ fn main() {
     match command.as_deref() {
         Some("bake") => bake(&args),
         Some("render") => render(&args),
+        Some("trees") => trees(&args),
         _ => eprintln!("{USAGE}"),
     }
 }
