@@ -14,7 +14,7 @@ use crate::parallel;
 use crate::trees::spruce::{grow, Limb, Spruce};
 use crate::vec3::{add, scale, Vec3};
 
-/// Eye height of the observer above the ground, in meters.
+/// Where the observer's eye stands by default, in meters.
 pub const EYE: Vec3 = [0.0, 0.0, 1.7];
 /// Samples per pixel along each axis for the forest floor.
 const FLOOR_SAMPLES: usize = 3;
@@ -23,6 +23,7 @@ type Pixel = [f64; 2];
 
 struct View<'a> {
     camera: &'a Camera,
+    eye: Vec3,
     width: usize,
     height: usize,
 }
@@ -49,7 +50,7 @@ fn coverage(p: Pixel, a: Pixel, b: Pixel, ra: f64, rb: f64) -> f64 {
 /// leaves of it.
 fn splat(clear: &mut [f64], view: &View, limb: &Limb) {
     let (w, h) = (view.width as f64, view.height as f64);
-    let project = |p: Vec3| view.camera.project(add(p, scale(EYE, -1.0)), w, h);
+    let project = |p: Vec3| view.camera.project(add(p, scale(view.eye, -1.0)), w, h);
     let (Some(a), Some(b)) = (project(limb.a), project(limb.b)) else {
         return;
     };
@@ -73,7 +74,7 @@ fn floor(view: &View, x: usize, y: usize, inside: &impl Fn(Vec3) -> bool) -> f64
         let sx = x as f64 + ((i % n) as f64 + 0.5) / n as f64;
         let sy = y as f64 + ((i / n) as f64 + 0.5) / n as f64;
         let dir = view.camera.ray(sx, sy, view.width as f64, view.height as f64)?;
-        (dir[2] < 0.0).then(|| add(EYE, scale(dir, EYE[2] / -dir[2])))
+        (dir[2] < 0.0).then(|| add(view.eye, scale(dir, view.eye[2] / -dir[2])))
     };
     let count = (0..n * n).filter_map(hit).filter(|&p| inside(p)).count();
     count as f64 / (n * n) as f64
@@ -90,17 +91,18 @@ fn layer(trees: &[Spruce], first: usize, stride: usize, view: &View) -> Vec<f64>
     clear
 }
 
-/// RGBA pixels, black where trees or forest floor `inside` cover them.
-/// Trees splat in a layer per thread, since coverage multiplies in any
-/// order.
+/// RGBA pixels, black where trees or forest floor `inside` cover them,
+/// seen from `eye`. Trees splat in a layer per thread, since coverage
+/// multiplies in any order.
 pub fn render(
     trees: &[Spruce],
     inside: impl Fn(Vec3) -> bool + Sync,
     camera: &Camera,
+    eye: Vec3,
     width: usize,
     height: usize,
 ) -> Vec<u8> {
-    let view = View { camera, width, height };
+    let view = View { camera, eye, width, height };
     let threads = thread::available_parallelism().map_or(1, |t| t.get());
     let layers = parallel::map(threads, |i| layer(trees, i, threads, &view));
     let row = |y: usize| -> Vec<u8> {

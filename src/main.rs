@@ -8,7 +8,7 @@ use pixel_skies::png;
 use pixel_skies::sky::atmosphere::Params;
 use pixel_skies::sky::{render, sky_io, Sky};
 use pixel_skies::trees::forest::{self, Forest};
-use pixel_skies::trees::silhouette;
+use pixel_skies::trees::silhouette::{self, EYE};
 
 const SKY: &str = "out/sky.bin";
 const IMAGE: &str = "out/sky.png";
@@ -79,7 +79,7 @@ fn trees(args: &Args) {
     let start = Instant::now();
     let planted = forest::plant(&forest, yaw, fov);
     let inside = |p| forest::floor(&forest, yaw, p);
-    let pixels = silhouette::render(&planted, inside, &camera, width, height);
+    let pixels = silhouette::render(&planted, inside, &camera, EYE, width, height);
     let path = args.get("out", TREES.to_string());
     write(&path, &png::encode(&pixels, width as u32, height as u32));
     eprintln!("planted {} trees in {path} in {:.1?}", planted.len(), start.elapsed());
