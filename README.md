@@ -58,6 +58,41 @@ Render options:
 | `--exposure` | 0 | compensation in stops |
 | `--out` | out/sky.png | image to write |
 
+## Trees
+
+A foreground treeline of procedural spruces renders separately, as black
+silhouettes on transparent pixels, through the same camera as the sky so
+the two line up when stacked:
+
+    ./target/release/pixel-skies trees --pitch 6 --fov 60 --out out/trees.png
+    ./target/release/pixel-skies render --elevation 0.5 --pitch 6 --fov 60
+    convert out/sky.png out/trees.png -composite out/treeline.png
+
+![Treeline](docs/treeline.png)
+
+| option | default | |
+|---|---|---|
+| `--seed` | 1 | which forest |
+| `--distance` | 150 | meters to the forest edge |
+| `--density` | 0.06 | trees per square meter |
+| `--yaw`, `--pitch`, `--fov` | 180, 12, 80 | as for `render` |
+| `--width`, `--height` | 1280, 720 | image size |
+| `--out` | out/trees.png | image to write |
+
+Each spruce is a few thousand tapered capsules in meters: a leaning trunk
+and whorls of branches, longest some way down the crown and shortening
+to a spire at the top. Upper branches reach up, lower ones sag and curl
+their tips up again, hung with shoots that droop more the lower they sit.
+Every tree draws its own slenderness, droop, fullness and lopsidedness,
+and loses the odd whorl, branch and shoot. The forest edge wavers, trees
+grow in clumps of similar height with young trees beneath and a few old
+ones above, edge trees keep branches to the ground while shaded ones keep
+only dead stubs, and a few are snags with broken tops.
+
+Limbs project through the camera and cover pixels by their distance
+field, combining as if independent, so a distant crown of countless
+sub-pixel shoots still adds up to a solid shape.
+
 ## How it works
 
 The observer stands on the ground, so the sky they see depends on three
