@@ -93,6 +93,29 @@ Limbs project through the camera and cover pixels by their distance
 field, combining as if independent, so a distant crown of countless
 sub-pixel shoots still adds up to a solid shape.
 
+## Video
+
+A ten second sunset over the treeline, a few hundred times faster than
+life, renders through ffmpeg to `out/sunset.mp4` in about seven minutes:
+
+    ./video.sh
+
+The sun sinks along its path, which near the horizon tilts from vertical
+by the latitude, so it slides north as it sets. Meanwhile the camera
+trucks slowly sideways and the nearer trees shift against the farther
+ones. The script pipes raw RGBA frames from the `video` binary into
+ffmpeg and passes extra options on to it, as in `./video.sh --seed 3`:
+
+| option | default | |
+|---|---|---|
+| `--sky` | out/sky.bin | baked tables to read |
+| `--from`, `--to` | 8, −4 | sun elevation at the start and end |
+| `--azimuth` | 270 | where the sun sets, also the view direction |
+| `--latitude` | 60 | of the observer, tilting the sun's path |
+| `--travel` | 8 | meters the camera moves to the right |
+| `--pitch`, `--fov` | 12, 60 | as for `render` |
+| `--seed`, `--distance`, `--density` | 1, 150, 0.06 | as for `trees` |
+
 ## How it works
 
 The observer stands on the ground, so the sky they see depends on three
