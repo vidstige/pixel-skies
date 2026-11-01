@@ -2,6 +2,7 @@
 
 pub mod args;
 pub mod camera;
+pub mod composite;
 mod deflate;
 mod parallel;
 pub mod png;
