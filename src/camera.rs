@@ -19,15 +19,20 @@ pub fn direction(azimuth: f64, elevation: f64) -> Vec3 {
     [azimuth.sin() * c, azimuth.cos() * c, elevation.sin()]
 }
 
+/// Forward, right and up of a pinhole looking towards `yaw` and `pitch`.
+fn basis(yaw: f64, pitch: f64) -> (Vec3, Vec3, Vec3) {
+    let forward = direction(yaw, pitch);
+    let right = normalize(cross(forward, [0.0, 0.0, 1.0]));
+    (forward, right, cross(right, forward))
+}
+
 impl Camera {
     /// Direction through image point (x, y), measured in pixels from the
     /// top left corner, or nothing where the projection has no sky.
     pub fn ray(&self, x: f64, y: f64, width: f64, height: f64) -> Option<Vec3> {
         match *self {
             Camera::Perspective { yaw, pitch, fov } => {
-                let forward = direction(yaw, pitch);
-                let right = normalize(cross(forward, [0.0, 0.0, 1.0]));
-                let up = cross(right, forward);
+                let (forward, right, up) = basis(yaw, pitch);
                 let s = (fov / 2.0).tan();
                 let u = (2.0 * x / width - 1.0) * s;
                 let v = (1.0 - 2.0 * y / height) * s * height / width;
