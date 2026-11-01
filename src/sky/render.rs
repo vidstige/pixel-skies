@@ -5,8 +5,8 @@ use std::f64::consts::{FRAC_PI_2, PI};
 use crate::camera::{direction, Camera};
 use crate::parallel;
 use crate::sky::Sky;
-use crate::spectrum::Xyz;
-use crate::tonemap::{encode, tonemap, Rgb};
+use crate::sky::spectrum::Xyz;
+use crate::sky::tonemap::{encode, tonemap, Rgb};
 use crate::vec3::{add, scale, Vec3};
 
 /// Display value a daylight sky's mean radiance is exposed to, before

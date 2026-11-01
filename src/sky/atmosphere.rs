@@ -2,7 +2,7 @@
 //! with altitude, and the optical coefficients set by aerosol load,
 //! humidity and ozone.
 
-use crate::spectrum::{self, Spectrum, OZONE_CROSS_SECTION};
+use crate::sky::spectrum::{self, Spectrum, OZONE_CROSS_SECTION};
 
 pub const BOTTOM_RADIUS: f64 = 6_360_000.0;
 pub const TOP_RADIUS: f64 = 6_460_000.0;

@@ -1,14 +1,27 @@
 //! A baked sky: everything precomputed for one atmosphere, ready to be
 //! looked up for any sun position and view direction.
 
-use crate::atmosphere::{mie_asymmetry, Atmosphere, Params};
-use crate::multiscattering::MultiScattering;
-use crate::phase::{cornette_shanks, rayleigh};
-use crate::scattering::Scattering;
-use crate::sun::Sun;
-use crate::transmittance::Transmittance;
+pub mod atmosphere;
+mod lut;
+mod march;
+mod multiscattering;
+mod phase;
+pub mod render;
+mod scattering;
+pub mod sky_io;
+mod spectrum;
+mod sun;
+mod tonemap;
+mod transmittance;
+
 use crate::vec3::{add, dot, scale, Vec3};
-use crate::spectrum::Xyz;
+use atmosphere::{mie_asymmetry, Atmosphere, Params};
+use multiscattering::MultiScattering;
+use phase::{cornette_shanks, rayleigh};
+use scattering::Scattering;
+use spectrum::Xyz;
+use sun::Sun;
+use transmittance::Transmittance;
 
 pub struct Sky {
     pub params: Params,

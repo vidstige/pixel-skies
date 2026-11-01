@@ -1,7 +1,7 @@
 //! Lookup tables of spectra over the unit square, sampled bilinearly.
 
 use crate::parallel;
-use crate::spectrum::Spectrum;
+use crate::sky::spectrum::Spectrum;
 
 pub struct Lut {
     width: usize,
@@ -50,7 +50,7 @@ mod tests {
 
     #[test]
     fn bilinear_functions_are_reproduced_between_nodes() {
-        let lut = Lut::new(5, 7, |u, v| [2.0 * u + 3.0 * v + u * v; crate::spectrum::N]);
+        let lut = Lut::new(5, 7, |u, v| [2.0 * u + 3.0 * v + u * v; crate::sky::spectrum::N]);
         let (u, v) = (0.37, 0.81);
         assert!((lut.sample(u, v)[0] - (2.0 * u + 3.0 * v + u * v)).abs() < 1e-12);
     }

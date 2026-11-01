@@ -6,12 +6,12 @@
 
 use std::f64::consts::PI;
 
-use crate::atmosphere::{distance_to_ground, distance_to_top, hits_ground};
-use crate::atmosphere::{Atmosphere, BOTTOM_RADIUS, TOP_RADIUS};
-use crate::lut::Lut;
-use crate::march::march;
-use crate::spectrum::{Spectrum, N};
-use crate::transmittance::Transmittance;
+use crate::sky::atmosphere::{distance_to_ground, distance_to_top, hits_ground};
+use crate::sky::atmosphere::{Atmosphere, BOTTOM_RADIUS, TOP_RADIUS};
+use crate::sky::lut::Lut;
+use crate::sky::march::march;
+use crate::sky::spectrum::{Spectrum, N};
+use crate::sky::transmittance::Transmittance;
 use crate::vec3::{add, dot, length, normalize, scale, Vec3};
 
 const SIZE: usize = 32;
@@ -85,7 +85,7 @@ impl MultiScattering {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::atmosphere::Params;
+    use crate::sky::atmosphere::Params;
 
     fn ground_psi(albedo: f64) -> Spectrum {
         let p = Params { aerosol: 0.1, humidity: 0.5, ozone: 300.0, albedo };

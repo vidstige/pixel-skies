@@ -1,7 +1,7 @@
 //! Ray marching through the atmosphere.
 
-use crate::atmosphere::{density, Atmosphere, Density, BOTTOM_RADIUS};
-use crate::spectrum::{Spectrum, N};
+use crate::sky::atmosphere::{density, Atmosphere, Density, BOTTOM_RADIUS};
+use crate::sky::spectrum::{Spectrum, N};
 use crate::vec3::{add, length, scale, Vec3};
 
 /// Marches `steps` segments from `origin` along `dir` out to `t_max`,

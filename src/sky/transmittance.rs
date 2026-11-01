@@ -2,11 +2,11 @@
 //! cosine in Bruneton's (2017) parametrization, which spends its texels
 //! on rays that miss the ground and packs them densely near the horizon.
 
-use crate::atmosphere::{distance_to_top, hits_ground, Atmosphere};
-use crate::atmosphere::{BOTTOM_RADIUS, TOP_RADIUS};
-use crate::lut::Lut;
-use crate::march::march;
-use crate::spectrum::{Spectrum, N};
+use crate::sky::atmosphere::{distance_to_top, hits_ground, Atmosphere};
+use crate::sky::atmosphere::{BOTTOM_RADIUS, TOP_RADIUS};
+use crate::sky::lut::Lut;
+use crate::sky::march::march;
+use crate::sky::spectrum::{Spectrum, N};
 
 const WIDTH: usize = 256;
 const HEIGHT: usize = 64;
@@ -62,7 +62,7 @@ impl Transmittance {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::atmosphere::Params;
+    use crate::sky::atmosphere::Params;
 
     fn atmosphere() -> Atmosphere {
         Atmosphere::new(Params { aerosol: 0.1, humidity: 0.5, ozone: 300.0, albedo: 0.2 })

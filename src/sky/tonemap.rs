@@ -1,7 +1,7 @@
 //! From scene XYZ to display sRGB: exposure, a filmic curve, and sRGB
 //! encoding.
 
-use crate::spectrum::Xyz;
+use crate::sky::spectrum::Xyz;
 use crate::vec3::{dot, Vec3};
 
 /// Linear sRGB in [0, 1].

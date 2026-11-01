@@ -3,10 +3,10 @@
 
 use std::f64::consts::{FRAC_PI_2, PI};
 
-use crate::lut::{locate, unit};
-use crate::scattering::OBSERVER_RADIUS;
-use crate::spectrum::{to_xyz, Xyz, SOLAR_IRRADIANCE};
-use crate::transmittance::Transmittance;
+use crate::sky::lut::{locate, unit};
+use crate::sky::scattering::OBSERVER_RADIUS;
+use crate::sky::spectrum::{to_xyz, Xyz, SOLAR_IRRADIANCE};
+use crate::sky::transmittance::Transmittance;
 use crate::vec3::{add, scale};
 
 /// 0.2666°, half the sun's mean apparent diameter.
@@ -69,7 +69,7 @@ impl Sun {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::atmosphere::{Atmosphere, Params};
+    use crate::sky::atmosphere::{Atmosphere, Params};
 
     fn sun() -> Sun {
         let p = Params { aerosol: 0.1, humidity: 0.5, ozone: 300.0, albedo: 0.2 };

@@ -10,13 +10,13 @@
 
 use std::f64::consts::{FRAC_PI_2, PI};
 
-use crate::atmosphere::{distance_to_top, Atmosphere, BOTTOM_RADIUS};
-use crate::lut::{locate, unit};
-use crate::march::march;
-use crate::multiscattering::MultiScattering;
+use crate::sky::atmosphere::{distance_to_top, Atmosphere, BOTTOM_RADIUS};
+use crate::sky::lut::{locate, unit};
+use crate::sky::march::march;
+use crate::sky::multiscattering::MultiScattering;
 use crate::parallel;
-use crate::spectrum::{to_xyz, Xyz, N, SOLAR_IRRADIANCE};
-use crate::transmittance::Transmittance;
+use crate::sky::spectrum::{to_xyz, Xyz, N, SOLAR_IRRADIANCE};
+use crate::sky::transmittance::Transmittance;
 use crate::vec3::{dot, length};
 
 pub const VIEW: usize = 128;
@@ -127,7 +127,7 @@ impl Scattering {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::atmosphere::Params;
+    use crate::sky::atmosphere::Params;
 
     fn sky(view: f64, sun: f64, azimuth: f64) -> Sample {
         let p = Params { aerosol: 0.1, humidity: 0.5, ozone: 300.0, albedo: 0.2 };

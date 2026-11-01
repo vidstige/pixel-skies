@@ -1,10 +1,10 @@
 //! Binary format for baked skies: a magic tag, the atmosphere parameters
 //! as f64, then the scattering and sun tables as f32, all little endian.
 
-use crate::atmosphere::Params;
-use crate::scattering::{Scattering, CELLS};
+use crate::sky::atmosphere::Params;
+use crate::sky::scattering::{Scattering, CELLS};
 use crate::sky::Sky;
-use crate::sun::{self, Sun};
+use crate::sky::sun::{self, Sun};
 
 const MAGIC: &[u8; 4] = b"SKY1";
 const HEADER: usize = 4 + 4 * 8;

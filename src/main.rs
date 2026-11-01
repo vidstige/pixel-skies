@@ -1,21 +1,9 @@
 mod args;
-mod atmosphere;
 mod camera;
 mod deflate;
-mod lut;
-mod march;
-mod multiscattering;
 mod parallel;
-mod phase;
 mod png;
-mod render;
-mod scattering;
 mod sky;
-mod sky_io;
-mod spectrum;
-mod sun;
-mod tonemap;
-mod transmittance;
 mod vec3;
 
 use std::path::Path;
@@ -23,9 +11,9 @@ use std::time::Instant;
 use std::{env, fs};
 
 use args::Args;
-use atmosphere::Params;
 use camera::{direction, Camera};
-use sky::Sky;
+use sky::atmosphere::Params;
+use sky::{render, sky_io, Sky};
 
 const SKY: &str = "out/sky.bin";
 const IMAGE: &str = "out/sky.png";
