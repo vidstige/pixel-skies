@@ -10,6 +10,7 @@ use std::{env, fs};
 use pixel_skies::args::Args;
 use pixel_skies::camera::{direction, Camera};
 use pixel_skies::composite::over;
+use pixel_skies::sky::tonemap::Curve;
 use pixel_skies::sky::{render, sky_io};
 use pixel_skies::trees::forest::{self, Forest};
 use pixel_skies::trees::silhouette::{self, EYE};
@@ -47,6 +48,7 @@ fn main() {
     let inside = |p| forest::floor(&forest, yaw, p);
     let travel: f64 = args.get("travel", 8.0);
     let right = direction(yaw + FRAC_PI_2, 0.0);
+    let curve = args.get("curve", Curve::Hue);
     let frames = args.get("frames", 300);
     let (width, height) = (args.get("width", 1280), args.get("height", 720));
     let mut out = io::stdout().lock();
@@ -55,7 +57,7 @@ fn main() {
         let t = i as f64 / frames as f64;
         let sun = sun(azimuth, latitude, from + (to - from) * t);
         let eye = add(EYE, scale(right, (t - 0.5) * travel));
-        let background = render::render(&sky, sun, &camera, width, height, 0.0);
+        let background = render::render(&sky, sun, &camera, width, height, 0.0, curve);
         let trees = silhouette::render(&planted, inside, &camera, eye, width, height);
         out.write_all(&over(&trees, &background)).unwrap();
         eprintln!("frame {}/{frames} in {:.1?}", i + 1, start.elapsed());

@@ -56,6 +56,7 @@ Render options:
 | `--fov` | 80 | horizontal field of view |
 | `--width`, `--height` | 1280, 720 | image size |
 | `--exposure` | 0 | compensation in stops |
+| `--curve` | hue | or `channels` for the film look |
 | `--out` | out/sky.png | image to write |
 
 ## Trees
@@ -114,6 +115,7 @@ ffmpeg and passes extra options on to it, as in `./video.sh --seed 3`:
 | `--azimuth` | 270 | where the sun sets, also the view direction |
 | `--latitude` | 60 | of the observer, tilting the sun's path |
 | `--travel` | 8 | meters the camera moves to the right |
+| `--curve` | hue | as for `render` |
 | `--pitch`, `--fov` | 20, 60 | as for `render` |
 | `--seed`, `--distance`, `--density` | 1, 150, 0.06 | as for `trees` |
 
@@ -150,8 +152,16 @@ turns clean blue skies milky and sunsets dull orange.
 Rendering looks the table up per pixel, adds the limb-darkened solar disk
 and a ground lit by sun and sky, and exposes for the mean sky radiance,
 partially adapting so twilight still reads as dusk. Adaptation stops in
-deep twilight, at half a millionth of daylight, so night falls dark. An
-ACES-style filmic curve and dithered sRGB encoding finish the image.
+deep twilight, at half a millionth of daylight, so night falls dark.
+
+An ACES-style filmic curve fits the light to the display. Run through
+each colour channel on its own, as film does, it flattens bright colours
+towards yellow and white: an orange glow with four times as much red as
+green comes out with barely more. So instead the curve maps the
+brightest channel and scales the others along with it, keeping hue,
+and only light dozens of times brighter than white, like the sun and
+its nearest glow, fades to white. Dithered sRGB encoding finishes the
+image.
 
 ## References
 

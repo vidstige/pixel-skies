@@ -11,7 +11,7 @@ mod scattering;
 pub mod sky_io;
 mod spectrum;
 mod sun;
-mod tonemap;
+pub mod tonemap;
 mod transmittance;
 
 use crate::vec3::{add, dot, scale, Vec3};

@@ -6,7 +6,7 @@ use crate::camera::{direction, Camera};
 use crate::parallel;
 use crate::sky::Sky;
 use crate::sky::spectrum::Xyz;
-use crate::sky::tonemap::{encode, tonemap, Rgb};
+use crate::sky::tonemap::{encode, tonemap, Curve, Rgb};
 use crate::vec3::{add, scale, Vec3};
 
 /// Display value a daylight sky's mean radiance is exposed to, before
@@ -31,6 +31,7 @@ struct Scene<'a> {
     camera: &'a Camera,
     ground: Xyz,
     exposure: f64,
+    curve: Curve,
 }
 
 /// Irradiance on horizontal ground from the sky dome, sun excluded.
@@ -71,7 +72,7 @@ fn pixel(scene: &Scene, x: usize, y: usize, width: usize, height: usize) -> [u8;
         let sx = x as f64 + ((i % n) as f64 + 0.5) / n as f64;
         let sy = y as f64 + ((i / n) as f64 + 0.5) / n as f64;
         let dir = scene.camera.ray(sx, sy, width as f64, height as f64)?;
-        Some(tonemap(radiance(scene, dir), scene.exposure))
+        Some(tonemap(radiance(scene, dir), scene.exposure, scene.curve))
     };
     let samples: Vec<Rgb> = (0..n * n).filter_map(sample).collect();
     let sum = samples.iter().copied().fold([0.0; 3], add);
@@ -82,7 +83,8 @@ fn pixel(scene: &Scene, x: usize, y: usize, width: usize, height: usize) -> [u8;
 }
 
 /// Exposure meters the mean sky radiance, partially adapting to dimmer
-/// skies down to dusk; `ev` shifts from there in stops.
+/// skies down to dusk; `ev` shifts from there in stops, and `curve`
+/// fits the result to the display.
 pub fn render(
     sky: &Sky,
     sun: Vec3,
@@ -90,13 +92,14 @@ pub fn render(
     width: usize,
     height: usize,
     ev: f64,
+    curve: Curve,
 ) -> Vec<u8> {
     let dome = dome_irradiance(sky, sun);
     let lit = add(dome, sky.sun.irradiance(sun[2].asin()));
     let ground = scale(lit, sky.params.albedo / PI);
     let mean = (dome[1] / PI).max(DIMMEST);
     let exposure = KEY * 2f64.powf(ev) / DAYLIGHT * (DAYLIGHT / mean).powf(ADAPTATION);
-    let scene = Scene { sky, sun, camera, ground, exposure };
+    let scene = Scene { sky, sun, camera, ground, exposure, curve };
     let row = |y: usize| -> Vec<[u8; 4]> {
         (0..width).map(|x| pixel(&scene, x, y, width, height)).collect()
     };

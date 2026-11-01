@@ -6,6 +6,7 @@ use pixel_skies::args::Args;
 use pixel_skies::camera::{direction, Camera};
 use pixel_skies::png;
 use pixel_skies::sky::atmosphere::Params;
+use pixel_skies::sky::tonemap::Curve;
 use pixel_skies::sky::{render, sky_io, Sky};
 use pixel_skies::trees::forest::{self, Forest};
 use pixel_skies::trees::silhouette::{self, EYE};
@@ -20,7 +21,8 @@ usage:
   pixel-skies render [--sky out/sky.bin] [--elevation 10] [--azimuth 180]
                      [--camera perspective|fisheye] [--yaw <azimuth>]
                      [--pitch 12] [--fov 80] [--width 1280] [--height 720]
-                     [--exposure 0] [--out out/sky.png]
+                     [--exposure 0] [--curve hue|channels]
+                     [--out out/sky.png]
   pixel-skies trees [--seed 1] [--distance 150] [--density 0.06]
                     [--yaw 180] [--pitch 12] [--fov 80]
                     [--width 1280] [--height 720] [--out out/trees.png]";
@@ -59,7 +61,8 @@ fn render(args: &Args) {
     };
     let (width, height) = (args.get("width", 1280), args.get("height", 720));
     let start = Instant::now();
-    let pixels = render::render(&sky, sun, &camera, width, height, args.get("exposure", 0.0));
+    let (ev, curve) = (args.get("exposure", 0.0), args.get("curve", Curve::Hue));
+    let pixels = render::render(&sky, sun, &camera, width, height, ev, curve);
     let path = args.get("out", IMAGE.to_string());
     write(&path, &png::encode(&pixels, width as u32, height as u32));
     eprintln!("rendered {path} in {:.1?}", start.elapsed());
