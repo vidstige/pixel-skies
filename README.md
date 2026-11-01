@@ -114,7 +114,7 @@ ffmpeg and passes extra options on to it, as in `./video.sh --seed 3`:
 | `--azimuth` | 270 | where the sun sets, also the view direction |
 | `--latitude` | 60 | of the observer, tilting the sun's path |
 | `--travel` | 8 | meters the camera moves to the right |
-| `--pitch`, `--fov` | 16, 60 | as for `render` |
+| `--pitch`, `--fov` | 20, 60 | as for `render` |
 | `--seed`, `--distance`, `--density` | 1, 150, 0.06 | as for `trees` |
 
 ## How it works

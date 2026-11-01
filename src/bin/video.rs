@@ -34,7 +34,7 @@ fn main() {
     let (from, to): (f64, f64) = (args.get("from", 8.0), args.get("to", -14.0));
     let yaw = azimuth.to_radians();
     let fov = args.get("fov", 60.0f64).to_radians();
-    let pitch = args.get("pitch", 16.0f64).to_radians();
+    let pitch = args.get("pitch", 20.0f64).to_radians();
     let camera = Camera::Perspective { yaw, pitch, fov };
     let forest = Forest {
         edge: args.get("distance", 150.0),
