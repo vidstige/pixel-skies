@@ -1,22 +1,14 @@
-mod args;
-mod camera;
-mod deflate;
-mod parallel;
-mod png;
-mod sky;
-mod trees;
-mod vec3;
-
 use std::path::Path;
 use std::time::Instant;
 use std::{env, fs};
 
-use args::Args;
-use camera::{direction, Camera};
-use sky::atmosphere::Params;
-use sky::{render, sky_io, Sky};
-use trees::forest::{self, Forest};
-use trees::silhouette;
+use pixel_skies::args::Args;
+use pixel_skies::camera::{direction, Camera};
+use pixel_skies::png;
+use pixel_skies::sky::atmosphere::Params;
+use pixel_skies::sky::{render, sky_io, Sky};
+use pixel_skies::trees::forest::{self, Forest};
+use pixel_skies::trees::silhouette;
 
 const SKY: &str = "out/sky.bin";
 const IMAGE: &str = "out/sky.png";
