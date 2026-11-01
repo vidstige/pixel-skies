@@ -31,10 +31,10 @@ fn main() {
     let sky = sky_io::decode(&fs::read(args.get("sky", SKY.to_string())).unwrap());
     let azimuth: f64 = args.get("azimuth", 270.0);
     let latitude: f64 = args.get("latitude", 60.0);
-    let (from, to): (f64, f64) = (args.get("from", 8.0), args.get("to", -4.0));
+    let (from, to): (f64, f64) = (args.get("from", 8.0), args.get("to", -14.0));
     let yaw = azimuth.to_radians();
     let fov = args.get("fov", 60.0f64).to_radians();
-    let pitch = args.get("pitch", 12.0f64).to_radians();
+    let pitch = args.get("pitch", 16.0f64).to_radians();
     let camera = Camera::Perspective { yaw, pitch, fov };
     let forest = Forest {
         edge: args.get("distance", 150.0),
