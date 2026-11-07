@@ -174,3 +174,9 @@ image.
   the CIE XYZ Color Matching Functions.* 2013.
 - G. Hänel. *The Properties of Atmospheric Aerosol Particles as Functions
   of the Relative Humidity.* 1976.
+
+## License
+
+MIT, see [LICENSE](LICENSE). The solar spectrum and ozone cross
+section tables are the measured data Bruneton's precomputed scattering
+demo uses.
