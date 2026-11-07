@@ -65,7 +65,9 @@ pub fn floor(forest: &Forest, yaw: f64, p: Vec3) -> bool {
     dot(p, forward) > edge(forest, dot(p, right))
 }
 
-fn tree(forest: &Forest, rng: &mut Rng, ahead: f64, lateral: f64) -> Option<Spruce> {
+/// A tree at `base`, `ahead` and `lateral` meters along the axes, unless
+/// it falls outside the forest or in a clearing.
+fn tree(forest: &Forest, rng: &mut Rng, base: Vec3, ahead: f64, lateral: f64) -> Option<Spruce> {
     let inside = ahead - edge(forest, lateral);
     let open = noise(forest.seed + 1, lateral / CLEARING, ahead / CLEARING);
     if inside < 0.0 || rng.next() > smoothstep((1.6 * open).min(1.0)) {
@@ -80,7 +82,7 @@ fn tree(forest: &Forest, rng: &mut Rng, ahead: f64, lateral: f64) -> Option<Spru
     let height = MEAN_HEIGHT * (0.65 + 0.7 * clump) * age * (1.0 + 0.1 * rng.normal());
     let shaded = (inside / EDGE_BAND).min(1.0);
     let crown_base = shaded * rng.range(0.25, 0.5) + rng.range(0.0, 0.08);
-    Some(Spruce { base: [0.0; 3], height, crown_base, seed: rng.seed() })
+    Some(Spruce { base, height, crown_base, seed: rng.seed() })
 }
 
 /// Trees within view of a camera looking towards `yaw` with horizontal
@@ -100,10 +102,8 @@ pub fn plant(forest: &Forest, yaw: f64, fov: f64) -> Vec<Spruce> {
         if lateral.abs() > ahead * spread + MEAN_HEIGHT {
             continue;
         }
-        if let Some(mut spruce) = tree(forest, &mut rng, ahead, lateral) {
-            spruce.base = add(scale(forward, ahead), scale(right, lateral));
-            trees.push(spruce);
-        }
+        let base = add(scale(forward, ahead), scale(right, lateral));
+        trees.extend(tree(forest, &mut rng, base, ahead, lateral));
     }
     trees
 }
