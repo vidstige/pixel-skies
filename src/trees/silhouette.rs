@@ -7,8 +7,6 @@
 //! combine as if they covered independent parts of a pixel, so a
 //! distant crown of many faint shoots still adds up to a solid shape.
 
-use std::thread;
-
 use crate::camera::Camera;
 use crate::parallel;
 use crate::trees::spruce::{grow, Limb, Spruce};
@@ -103,7 +101,7 @@ pub fn render(
     height: usize,
 ) -> Vec<u8> {
     let view = View { camera, eye, width, height };
-    let threads = thread::available_parallelism().map_or(1, |t| t.get());
+    let threads = parallel::threads();
     let layers = parallel::map(threads, |i| layer(trees, i, threads, &view));
     let row = |y: usize| -> Vec<u8> {
         let alpha = |x: usize| {

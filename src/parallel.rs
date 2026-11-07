@@ -6,9 +6,12 @@ use std::thread;
 /// slow ones would otherwise straggle on.
 const CHUNKS_PER_THREAD: usize = 8;
 
+pub fn threads() -> usize {
+    thread::available_parallelism().map_or(1, |t| t.get())
+}
+
 pub fn map<T: Send>(n: usize, f: impl Fn(usize) -> T + Sync) -> Vec<T> {
-    let threads = thread::available_parallelism().map_or(1, |t| t.get());
-    let chunk = n.div_ceil(threads * CHUNKS_PER_THREAD);
+    let chunk = n.div_ceil(threads() * CHUNKS_PER_THREAD);
     let f = &f;
     thread::scope(|scope| {
         let handles: Vec<_> = (0..n)
