@@ -123,6 +123,13 @@ ffmpeg and passes extra options on to it, as in `./video.sh --seed 3`:
 | `--pitch`, `--fov` | 20, 60 | as for `render` |
 | `--seed`, `--distance`, `--density` | 1, 150, 0.06 | as for `trees` |
 
+The environment sets the frame size and the file. A square frame shows
+more sky above and more ground below, so narrow and raise the view:
+
+    WIDTH=1920 HEIGHT=1080 OUT=out/sunset-x.mp4 ./video.sh
+    WIDTH=1080 HEIGHT=1080 OUT=out/sunset-square.mp4 ./video.sh \
+        --fov 45 --pitch 24
+
 ## How it works
 
 The observer stands on the ground, so the sky they see depends on three
