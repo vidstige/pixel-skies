@@ -62,7 +62,9 @@ fn filtered(row: &[u8], above: &[u8], kind: u8) -> Vec<u8> {
 /// Standard minimum-sum-of-absolute-differences heuristic: the filter whose
 /// output is closest to zero usually deflates best.
 fn best_filter(row: &[u8], above: &[u8]) -> (u8, Vec<u8>) {
-    let cost = |bytes: &Vec<u8>| bytes.iter().map(|&b| (b as i8).unsigned_abs() as u32).sum::<u32>();
+    let cost = |bytes: &[u8]| -> u32 {
+        bytes.iter().map(|&b| (b as i8).unsigned_abs() as u32).sum()
+    };
     let candidates = (1..=4).map(|kind| (kind, filtered(row, above, kind)));
     candidates
         .chain([(0, row.to_vec())])
@@ -85,13 +87,13 @@ fn scanlines(pixels: &[u8], width: usize, height: usize) -> Vec<u8> {
 }
 
 /// `pixels` is tightly packed RGBA, top row first.
-pub fn encode(pixels: &[u8], width: u32, height: u32) -> Vec<u8> {
+pub fn encode(pixels: &[u8], width: usize, height: usize) -> Vec<u8> {
     let mut header = Vec::new();
-    header.extend_from_slice(&width.to_be_bytes());
-    header.extend_from_slice(&height.to_be_bytes());
+    header.extend_from_slice(&(width as u32).to_be_bytes());
+    header.extend_from_slice(&(height as u32).to_be_bytes());
     header.extend_from_slice(&[8, 6, 0, 0, 0]);
 
-    let raw = scanlines(pixels, width as usize, height as usize);
+    let raw = scanlines(pixels, width, height);
     let mut stream = vec![0x78, 0x01];
     stream.extend(deflate::compress(&raw));
     stream.extend_from_slice(&adler32(&raw).to_be_bytes());

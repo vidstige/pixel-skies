@@ -156,7 +156,8 @@ mod tests {
 
     #[test]
     fn incompressible_input_stays_close_to_its_size() {
-        let data: Vec<u8> = (0..4096u32).map(|i| (i.wrapping_mul(2654435761) >> 24) as u8).collect();
+        let hash = |i: u32| (i.wrapping_mul(2654435761) >> 24) as u8;
+        let data: Vec<u8> = (0..4096).map(hash).collect();
         assert!(compress(&data).len() < data.len() * 10 / 8);
     }
 }

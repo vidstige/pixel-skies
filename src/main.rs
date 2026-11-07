@@ -64,7 +64,7 @@ fn render(args: &Args) {
     let (ev, curve) = (args.get("exposure", 0.0), args.get("curve", Curve::Hue));
     let pixels = render::render(&sky, sun, &camera, width, height, ev, curve);
     let path = args.get("out", IMAGE.to_string());
-    write(&path, &png::encode(&pixels, width as u32, height as u32));
+    write(&path, &png::encode(&pixels, width, height));
     eprintln!("rendered {path} in {:.1?}", start.elapsed());
 }
 
@@ -84,7 +84,7 @@ fn trees(args: &Args) {
     let inside = |p| forest::floor(&forest, yaw, p);
     let pixels = silhouette::render(&planted, inside, &camera, EYE, width, height);
     let path = args.get("out", TREES.to_string());
-    write(&path, &png::encode(&pixels, width as u32, height as u32));
+    write(&path, &png::encode(&pixels, width, height));
     eprintln!("planted {} trees in {path} in {:.1?}", planted.len(), start.elapsed());
 }
 
