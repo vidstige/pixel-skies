@@ -10,7 +10,7 @@ use crate::sky::transmittance::Transmittance;
 use crate::vec3::{add, scale};
 
 /// 0.2666°, half the sun's mean apparent diameter.
-pub const ANGULAR_RADIUS: f64 = 0.004_653;
+const ANGULAR_RADIUS: f64 = 0.004_653;
 pub const SIZE: usize = 256;
 /// Linear limb darkening coefficient for visible light.
 const LIMB_DARKENING: f64 = 0.6;

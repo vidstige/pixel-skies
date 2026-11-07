@@ -10,7 +10,7 @@ use crate::vec3::{dot, Vec3};
 pub type Rgb = [f64; 3];
 
 /// How a display squeezes scene light into its range.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy)]
 pub enum Curve {
     /// Every channel through the filmic curve on its own, as on film:
     /// bright colours drift towards yellow and white.

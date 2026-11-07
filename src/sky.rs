@@ -24,9 +24,9 @@ use sun::Sun;
 use transmittance::Transmittance;
 
 pub struct Sky {
-    pub params: Params,
-    pub scattering: Scattering,
-    pub sun: Sun,
+    params: Params,
+    scattering: Scattering,
+    sun: Sun,
 }
 
 impl Sky {

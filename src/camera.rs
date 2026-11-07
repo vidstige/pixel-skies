@@ -74,7 +74,6 @@ impl Camera {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::vec3::dot;
 
     fn close(a: Vec3, b: Vec3) -> bool {
         dot(a, b) > 1.0 - 1e-9

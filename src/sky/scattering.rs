@@ -19,9 +19,9 @@ use crate::sky::spectrum::{to_xyz, Xyz, N, SOLAR_IRRADIANCE};
 use crate::sky::transmittance::Transmittance;
 use crate::vec3::{dot, length};
 
-pub const VIEW: usize = 128;
-pub const SUN: usize = 96;
-pub const AZIMUTH: usize = 64;
+const VIEW: usize = 128;
+const SUN: usize = 96;
+const AZIMUTH: usize = 64;
 pub const CELLS: usize = VIEW * SUN * AZIMUTH;
 pub const OBSERVER_RADIUS: f64 = BOTTOM_RADIUS + 2.0;
 const STEPS: usize = 128;

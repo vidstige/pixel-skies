@@ -13,7 +13,6 @@ use crate::trees::rng::Rng;
 use crate::vec3::{add, scale, Vec3};
 
 /// Tapered capsule from `a` to `b`, radius `ra` at `a` and `rb` at `b`.
-#[derive(Clone, Copy, Debug)]
 pub struct Limb {
     pub a: Vec3,
     pub b: Vec3,

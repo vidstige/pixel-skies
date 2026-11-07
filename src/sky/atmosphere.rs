@@ -90,12 +90,12 @@ impl Atmosphere {
         let f = growth(p.humidity);
         let column = p.aerosol / MIE_SCALE_HEIGHT;
         let angstrom = |l: f64, alpha: f64| (l / 550.0).powf(-alpha);
-        let albedo = DRY_SINGLE_SCATTERING_ALBEDO;
+        let ssa = DRY_SINGLE_SCATTERING_ALBEDO;
         let mie_scattering = spectrum::from_fn(|l| {
-            column * albedo * f * angstrom(l, DRY_ANGSTROM / f)
+            column * ssa * f * angstrom(l, DRY_ANGSTROM / f)
         });
         let absorption =
-            spectrum::from_fn(|l| column * (1.0 - albedo) * angstrom(l, DRY_ANGSTROM));
+            spectrum::from_fn(|l| column * (1.0 - ssa) * angstrom(l, DRY_ANGSTROM));
         let ozone = p.ozone * DOBSON_UNIT / OZONE_WIDTH;
         Self {
             albedo: p.albedo,
