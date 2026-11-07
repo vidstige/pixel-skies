@@ -40,10 +40,7 @@ impl Sun {
 
     /// Mean radiance of the disk centred at `elevation`.
     fn mean(&self, elevation: f64) -> Xyz {
-        if elevation < 0.0 {
-            return [0.0; 3];
-        }
-        let (i, f) = locate((elevation / FRAC_PI_2).sqrt(), SIZE);
+        let (i, f) = locate((elevation.max(0.0) / FRAC_PI_2).sqrt(), SIZE);
         add(scale(self.radiance[i], 1.0 - f), scale(self.radiance[i + 1], f))
     }
 
