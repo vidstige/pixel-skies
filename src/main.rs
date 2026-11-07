@@ -53,11 +53,12 @@ fn render(args: &Args) {
     let sun = direction(azimuth.to_radians(), args.get("elevation", 10.0f64).to_radians());
     let camera = match args.get("camera", "perspective".to_string()).as_str() {
         "fisheye" => Camera::Fisheye,
-        _ => Camera::Perspective {
+        "perspective" => Camera::Perspective {
             yaw: args.get("yaw", azimuth).to_radians(),
             pitch: args.get("pitch", 12.0f64).to_radians(),
             fov: args.get("fov", 80.0f64).to_radians(),
         },
+        other => panic!("unknown camera {other}"),
     };
     let (width, height) = (args.get("width", 1280), args.get("height", 720));
     let start = Instant::now();
