@@ -4,19 +4,23 @@ A physically based sky renderer that writes PNG images of clear skies for
 any sun position, from noon blue through sunsets to deep twilight. Light is
 traced spectrally through Rayleigh-scattering air, Mie-scattering aerosol
 and ozone, multiple scattering included, and baked into lookup tables so a
-frame renders in a fraction of a second. Plain Rust, no dependencies: the
-PNG encoder, threading and colour science are all in the crate.
+frame renders in a fraction of a second. A procedural spruce treeline
+frames the skies, and a video binary sets the sun over it. Plain Rust, no
+dependencies: the PNG encoder, threading and colour science are all in
+the crate.
 
-![Sunset](docs/sunset.png)
+![Sunset over a spruce treeline](docs/hero.png)
 
 | | |
 |---|---|
-| ![Noon](docs/noon.png) | ![Golden hour](docs/golden-hour.png) |
-| Noon, looking away from the sun | Golden hour, sun at 8° |
-| ![Belt of Venus](docs/belt-of-venus.png) | ![Dusk](docs/dusk.png) |
-| Belt of Venus over Earth's shadow, sun at −2° | Dusk, sun at −6° |
-| ![Humid sunset](docs/sunset-humid.png) | ![Fisheye](docs/fisheye.png) |
-| Hazy, humid air, sun at 3° | All-sky fisheye, sun at 30° |
+| ![Sunset](docs/sunset.png) | ![Noon](docs/noon.png) |
+| Sunset, sun at 1° | Noon, looking away from the sun |
+| ![Golden hour](docs/golden-hour.png) | ![Belt of Venus](docs/belt-of-venus.png) |
+| Golden hour, sun at 8° | Belt of Venus over Earth's shadow, sun at −2° |
+| ![Dusk](docs/dusk.png) | ![Humid sunset](docs/sunset-humid.png) |
+| Dusk, sun at −6° | Hazy, humid air, sun at 3° |
+| ![Fisheye](docs/fisheye.png) | ![All-sky sunset](docs/fisheye-sunset.png) |
+| All-sky fisheye, sun at 30° | All-sky sunset, sun at 2° |
 
 ## Running
 
