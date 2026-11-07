@@ -1,8 +1,7 @@
 //! Deflate with fixed Huffman codes and greedy LZ77. No dependencies.
 //!
-//! Only the compressor side exists, which is why the fixed code tables are
-//! enough: dynamic codes would buy another 10% or so on top of a match
-//! finder that is already doing most of the work.
+//! Fixed codes are enough: dynamic ones would buy another 10% or so on
+//! top of a match finder that is already doing most of the work.
 
 const WINDOW: usize = 32768;
 const MIN_MATCH: usize = 3;
